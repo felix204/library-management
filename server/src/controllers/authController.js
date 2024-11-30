@@ -10,7 +10,7 @@ const register = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ message: "Bu email zaten kayıtlı" });
     }
-
+    
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
@@ -19,6 +19,7 @@ const register = async (req, res) => {
     });
 
     res.status(201).json({
+      success: true,
       message: "Kullanıcı başarıyla oluşturuldu",
       user: {
         id: user._id,
@@ -27,7 +28,11 @@ const register = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Sunucu hatası", error: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: "Sunucu hatası", 
+      error: error.message 
+    });
   }
 };
 
@@ -37,12 +42,18 @@ const login = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Kullanıcı bulunamadı" });
+      return res.status(400).json({ 
+        success: false,
+        message: "Kullanıcı bulunamadı" 
+      });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Geçersiz şifre" });
+      return res.status(400).json({ 
+        success: false,
+        message: "Geçersiz şifre" 
+      });
     }
 
     const token = jwt.sign(
@@ -51,16 +62,28 @@ const login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000 // 1 gün
+    });
+
     res.json({
-      token,
+      success: true,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
       },
+      token
     });
   } catch (error) {
-    res.status(500).json({ message: "Sunucu hatası", error: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: "Sunucu hatası", 
+      error: error.message 
+    });
   }
 };
 
