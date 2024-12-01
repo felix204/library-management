@@ -1,28 +1,24 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const connectDB = require('./config/db');
 const app = express();
-const cookieParser = require('cookie-parser');
 
-// .env dosya yükle 
+// .env dosyasını yükle 
 dotenv.config();
 
 // CORS ayarları
 app.use(cors({
     origin: 'http://localhost:3000', // Next.js uygulamanızın adresi
-    credentials: true, // Cookie/token aktarımı için gerekli
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type']
 }));
 
+// Middleware
 app.use(express.json());
-app.use(cookieParser());
 
 // Routes
-app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/books', require('./routes/bookRoutes'));
 
 // Database connection
 connectDB();
