@@ -12,6 +12,13 @@ const api = axios.create({
     }
 });
 
+
+
+
+
+
+// AUTH
+
 // Login
 const userLogin = createAsyncThunk(
     "auth/login", 
@@ -42,4 +49,25 @@ const userRegister = createAsyncThunk(
     }
 );
 
-export { userLogin, userRegister };
+
+
+
+
+//BOOKS
+
+// Get all books
+const getAllBooks = createAsyncThunk(
+    "books/getAll",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.get('/books');
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || 'Kitaplar getirilirken bir hata oluştu'
+            );
+        }
+    }
+);
+
+export { userLogin, userRegister, getAllBooks };

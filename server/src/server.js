@@ -9,9 +9,10 @@ dotenv.config();
 
 // CORS ayarları
 app.use(cors({
-    origin: 'http://localhost:3000', // Next.js uygulamanızın adresi
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type']
+    origin: 'http://localhost:3000', // Frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 }));
 
 // Middleware
@@ -19,6 +20,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/books', require('./routes/bookRoutes'));
+app.use('/api/auth', require('./routes/authRoutes'));
 
 // Database connection
 connectDB();
