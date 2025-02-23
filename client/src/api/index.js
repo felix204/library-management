@@ -12,10 +12,29 @@ const api = axios.create({
     }
 });
 
+/* api.interceptors.request.use(
+    (config) => {
+        const token = document.cookie.split('token=')[1];
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
-
-
-
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            store.dispatch(logout());
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+); */
 
 // AUTH
 
@@ -49,10 +68,16 @@ const userRegister = createAsyncThunk(
     }
 );
 
-
-
-
-
+/* // Logout
+const handleLogout = async () => {
+    try {
+        await api.post('/auth/logout');
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    } catch (error) {
+        console.error('Çıkış yapılırken hata oluştu:', error);
+    }
+};
+ */
 //BOOKS
 
 // Get all books
