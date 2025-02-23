@@ -11,20 +11,10 @@ export default function Home() {
   const { books, loading, error } = useSelector((state) => state.book);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!isAuthenticated) {
-        router.push("/login");
-        return;
-      }
-      
-      if (!books?.data?.length) {
-        dispatch(getAllBooks());
-      }
-    };
-
-    fetchData();
-  }, [isAuthenticated]);
+  const handleLogout = async () => {
+    /* await dispatch(userLogout()); */
+    router.push('/login');
+  };
 
   if (loading) {
     return <div className="text-center p-4">Yükleniyor...</div>;
@@ -40,6 +30,15 @@ export default function Home() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Kitaplar</h1>
+        <button 
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          Çıkış Yap
+        </button>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {books?.data?.map((book) => (
           <BookCard key={book._id} book={book} />
